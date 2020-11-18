@@ -1,0 +1,83 @@
+<template>
+  <div>
+    <el-table
+      :data="list"
+      style="width: 100%;margin-bottom: 20px;"
+      row-key="id"
+      border
+      :tree-props="{children: 'children'}"
+    >
+      <el-table-column prop="id" label="规格编号" width="80"></el-table-column>
+      <el-table-column prop="specsname" label="规格名称" width="160"></el-table-column>
+      <el-table-column label="规格属性">
+        <template slot-scope="scope">
+          <el-tag v-for="item in scope.row.attrs" :key="item">{{item}}</el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" width="290">
+        <template slot-scope="scope">
+          <el-button type="primary" v-if="scope.row.status==1">启用</el-button>
+          <el-button type="info" v-else>禁用</el-button>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="200">
+        <template slot-scope="scope">
+          <el-button type="primary" @click="edit(scope.row.id)">编辑</el-button>
+          <del-btn @confirm="del(scope.row.id)"></del-btn>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="total"
+      :page-size="size"
+      @current-change="changePage"
+    ></el-pagination>
+  </div>
+</template>
+
+<script>
+import { mapActions, mapGetters } from "vuex";
+import { successAlert } from "../../../utils/alert";
+import { reqspecsDel } from "../../../utils/http";
+export default {
+  data() {
+    return {};
+  },
+  mounted() {
+    this.reqCount();
+    this.reqList();
+  },
+  computed: {
+    ...mapGetters({
+      list: "specs/list",
+      total: "specs/total",
+      size: "specs/size",
+    }),
+  },
+  methods: {
+    ...mapActions({
+      reqList: "specs/reqList",
+      reqCount: "specs/reqCount",
+      changePage: "specs/changePage",
+    }),
+    del(id) {
+      reqspecsDel(id).then((res) => {
+        if (res.data.code==200) {
+          successAlert(res.data.msg);
+          this.reqList();
+          this.reqCount();
+        }
+      });
+    },
+    edit(id) {
+      this.$emit("edit", id);
+    },
+  },
+};
+</script>
+
+<style scoped>
+</style>
