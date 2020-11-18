@@ -257,12 +257,11 @@ export default {
     },
     add() {
       this.check().then(() => {
-        // this.user.description = this.editor.txt.html();
-        // this.user.specsattr =JSON.stringify(this.user.specsattr)
+        // this.user.specsattr = JSON.stringify(this.user.specsattr);
         this.user.description = this.editor.txt.html();
         let d = { ...this.user };
         d.specsattr = JSON.stringify(d.specsattr);
-        reqGoodsAdd(d).then((res) => {
+        reqGoodsAdd(this.user).then((res) => {
           if (res.data.code == 200) {
             successAlert(res.data.msg);
             this.cancel();

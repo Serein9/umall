@@ -11,6 +11,7 @@ import specs from "./modules/specs";
 import banner from "./modules/banner";
 import goods from "./modules/goods";
 import seckill from "./modules/seckill";
+import menu from "./modules/menu";
 
 export default new Vuex.Store({
   state,
@@ -22,6 +23,7 @@ export default new Vuex.Store({
     specs,
     banner,
     goods,
-    seckill
+    seckill,
+    menu
   }
 });

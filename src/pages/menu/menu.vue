@@ -2,9 +2,9 @@
   <div>
     <el-button type="primary" @click="willAdd">添加</el-button>
     <!-- 列表-->
-    <v-list :list="list" @init="init" @edit="edit($event)" :info="info"></v-list>
+    <v-list @edit="edit($event)" :info="info"></v-list>
     <!-- 弹框 -->
-    <v-form :info="info" :list="list" @init="init" ref="form"></v-form>
+    <v-form :info="info" ref="form"></v-form>
   </div>
 </template>
 
@@ -25,23 +25,20 @@ export default {
     };
   },
   mounted() {
-    this.init();
+    this.reqList();
   },
   computed: {
     ...mapGetters({}),
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      reqList: "menu/reqList",
+    }),
     willAdd() {
       this.info.isshow = true;
       this.info.title = "添加菜单";
     },
-    init() {
-      reqMenuList().then((res) => {
-        this.list = res.data.list;
-        console.log(res);
-      });
-    },
+
     edit(id) {
       this.info.isshow = true;
       this.info.title = "编辑表单";

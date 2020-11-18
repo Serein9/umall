@@ -59,7 +59,7 @@ export const reqMenuDel = id => {
   return axios({
     url: baseUrl + "/api/menudelete",
     method: "post",
-    data: qs.stringify({ id })
+    data: qs.stringify({ id: id })
   });
 };
 

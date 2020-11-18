@@ -11,7 +11,7 @@
             <el-option v-for="item in list" :key="item.id" :label="item.title" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
-       
+
         <el-form-item label="菜单图标" label-width="120px" v-if="form.type===1">
           <el-select v-model="form.icon" placeholder="请选择">
             <el-option v-for="item in icon" :key="item" :value="item">
@@ -46,9 +46,15 @@
 import { routers } from "../../../router/index";
 import { reqMenuAdd, reqMenuDetail, reqMenuEdit } from "../../../utils/http";
 import { successAlert, errorAlert } from "../../../utils/alert";
-export default {
-  props: ["info", "list"],
+import { mapActions, mapGetters } from "vuex";
 
+export default {
+  props: ["info"],
+  computed: {
+    ...mapGetters({
+      list: "menu/list",
+    }),
+  },
   data() {
     return {
       routers: routers,
@@ -69,6 +75,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      reqList: "menu/reqList",
+    }),
     //取消
     cancel() {
       this.info.isshow = false;
@@ -87,8 +96,8 @@ export default {
           this.empty();
           this.cancel();
           //通知menu刷新
-          this.$emit("init");
-        } 
+          this.reqList();
+        }
       });
     },
     //置空form
@@ -108,8 +117,8 @@ export default {
           successAlert("修改成功");
           this.cancel();
           this.empty();
-          this.$emit("init");
-        } 
+          this.reqList();
+        }
       });
     },
     getOne(id) {
@@ -123,6 +132,9 @@ export default {
         this.empty();
       }
     },
+  },
+  mounted() {
+    this.reqList();
   },
 };
 </script>

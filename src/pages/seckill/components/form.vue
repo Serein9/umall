@@ -6,6 +6,7 @@
           <el-input v-model="user.title" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="活动时间" label-width="120px">
+          {{value}}
           <el-date-picker
             v-model="value"
             type="daterange"
@@ -155,7 +156,6 @@ export default {
     add() {
       this.user.begintime = this.value[0].getTime();
       this.user.endtime = this.value[1].getTime();
-      console.log(this.user);
       reqSeckAdd(this.user).then((res) => {
         if (res.data.code == 200) {
           successAlert(res.data.msg);

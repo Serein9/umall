@@ -33,14 +33,23 @@
 </template>
 
 <script>
-import { reqRoleDel } from "../../../utils/http";
+import { reqMenuDel } from "../../../utils/http";
 import { successAlert } from "../../../utils/alert";
+import { mapActions, mapGetters } from "vuex";
 export default {
-  props: ["list", "info"],
+  props: ["info"],
+  computed: {
+    ...mapGetters({
+      list: "menu/list",
+    }),
+  },
   data() {
     return {};
   },
   methods: {
+    ...mapActions({
+      reqList: "menu/reqList",
+    }),
     del(id) {
       this.$confirm("确定要删除吗?", "删除提示", {
         confirmButtonText: "删除",
@@ -48,10 +57,10 @@ export default {
         type: "warning",
       })
         .then(() => {
-          reqRoleDel(id).then((res) => {
+          reqMenuDel(id).then((res) => {
             if (res.data.code == 200) {
               successAlert("删除成功");
-              this.$emit("init");
+              this.reqList();
             }
           });
         })
