@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-dialog :title="info.title" :visible.sync="info.isshow" @closed="closed" @opened="opened">
-      <el-form :model="user">
+      <el-form :model="user" :rules="rules">
         <el-form-item label="一级分类" label-width="120px">
           <el-select v-model="user.first_cateid" placeholder="请选择" @change="changeFirst">
             <el-option
@@ -114,6 +114,32 @@ export default {
       imgUrl: "",
       secondCateList: [],
       attrList: [],
+      rules: {
+        first_cateid: [
+          { required: true, message: "请选择一级分类", trigger: "change" },
+        ],
+        second_cateid: [
+          { required: true, message: "请选择二级分类", trigger: "change" },
+        ],
+        goodsname: [
+          { required: true, message: "请填写商品名称", trigger: "blur" },
+        ],
+        price: [{ required: true, message: "请填写价格", trigger: "blur" }],
+        market_price: [
+          { required: true, message: "请填写市场价格", trigger: "blur" },
+        ],
+        specsid: [
+          { required: true, message: "请选择商品规格", trigger: "change" },
+        ],
+        specsattr: [
+          {
+            type: "array",
+            required: true,
+            message: "请至少选择一个商品规格",
+            trigger: "change",
+          },
+        ],
+      },
     };
   },
   mounted() {
@@ -134,7 +160,49 @@ export default {
       reqgoodsList: "goods/reqList",
       reqgoodsCount: "goods/reqCount",
     }),
-
+    //验证
+    check() {
+      return new Promise((resolve, reject) => {
+        //验证
+        if (this.user.first_cateid === "") {
+          errorAlert("一级分类不能为空");
+          return;
+        }
+        if (this.user.second_cateid === "") {
+          errorAlert("二级分类不能为空");
+          return;
+        }
+        if (this.user.goodsname === "") {
+          errorAlert("商品名称不能为空");
+          return;
+        }
+        if (this.user.price === "") {
+          errorAlert("商品价格不能为空");
+          return;
+        }
+        if (this.user.market_price === "") {
+          errorAlert("商品市场价格不能为空");
+          return;
+        }
+        if (!this.user.img) {
+          errorAlert("请选择图片");
+          return;
+        }
+        if (this.user.specsid === "") {
+          errorAlert("请选择商品规格");
+          return;
+        }
+        if (this.user.specsattr.length === 0) {
+          errorAlert("请选择商品属性");
+          return;
+        }
+        if (this.editor.txt.html() === "") {
+          errorAlert("请输入商品描述");
+          return;
+        }
+        resolve();
+      });
+    },
     empty() {
       this.user = {
         first_cateid: "",
@@ -188,19 +256,21 @@ export default {
       this.user.img = file;
     },
     add() {
-      // this.user.description = this.editor.txt.html();
-      // this.user.specsattr =JSON.stringify(this.user.specsattr)
-      this.user.description = this.editor.txt.html();
-      let d = { ...this.user };
-      d.specsattr = JSON.stringify(d.specsattr);
-      reqGoodsAdd(d).then((res) => {
-        if (res.data.code == 200) {
-          successAlert(res.data.msg);
-          this.cancel();
-          this.empty();
-          this.reqgoodsList();
-          this.reqgoodsCount();
-        }
+      this.check().then(() => {
+        // this.user.description = this.editor.txt.html();
+        // this.user.specsattr =JSON.stringify(this.user.specsattr)
+        this.user.description = this.editor.txt.html();
+        let d = { ...this.user };
+        d.specsattr = JSON.stringify(d.specsattr);
+        reqGoodsAdd(d).then((res) => {
+          if (res.data.code == 200) {
+            successAlert(res.data.msg);
+            this.cancel();
+            this.empty();
+            this.reqgoodsList();
+            this.reqgoodsCount();
+          }
+        });
       });
     },
     getOne(id) {
@@ -222,16 +292,18 @@ export default {
       });
     },
     update() {
-      this.user.description = this.editor.txt.html();
-      let d = { ...this.user };
-      d.specsattr = JSON.stringify(d.specsattr);
-      reqGoodsEdit(d).then((res) => {
-        if (res.data.code == 200) {
-          successAlert(res.data.msg);
-          this.cancel();
-          this.empty();
-          this.reqgoodsList();
-        }
+      this.check().then(() => {
+        this.user.description = this.editor.txt.html();
+        let d = { ...this.user };
+        d.specsattr = JSON.stringify(d.specsattr);
+        reqGoodsEdit(d).then((res) => {
+          if (res.data.code == 200) {
+            successAlert(res.data.msg);
+            this.cancel();
+            this.empty();
+            this.reqgoodsList();
+          }
+        });
       });
     },
     cancel() {

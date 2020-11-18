@@ -1,15 +1,34 @@
 import axios from "axios";
 import qs from "qs";
 import { errorAlert } from "./alert";
+import store from "../store";
+import router from "../router";
 import Vue from "vue";
 let baseUrl = "/aa";
 Vue.prototype.$imgPre = "http://localhost:3000";
 
+axios.interceptors.request.use(req => {
+  if (req.url != baseUrl + "/api/userlogin") {
+    req.headers.authorization = store.state.userInfo.token;
+  }
+  return req;
+});
+
+//响应拦截
 axios.interceptors.response.use(res => {
-  console.log("本次请求地址是:" + res.config.url);
+  console.log("本次请求地址是：" + res.config.url);
   console.log(res);
-  if (res.data.code != 200) {
+  //13.统一处理失败，组件内只需要处理成功即可
+  if (res.data.code !== 200) {
     errorAlert(res.data.msg);
+  }
+
+  if (res.data.msg === "登录已过期或访问权限受限") {
+    //掉线了
+    //清除登录信息
+    store.dispatch("changeUser", {});
+    //跳转到登录页
+    router.push("/login");
   }
   return res;
 });

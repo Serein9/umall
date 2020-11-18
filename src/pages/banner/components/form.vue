@@ -87,11 +87,10 @@ export default {
     add() {
       reqBannerAdd(this.user).then((res) => {
         if (res.data.code == 200) {
-          // successAlert(res.data.msg);
-          // this.cancel();
-          // this.empty();
-          // this.reqList();
-          console.log(res.data.list);
+          successAlert(res.data.msg);
+          this.cancel();
+          this.empty();
+          this.reqList();
         }
       });
     },
