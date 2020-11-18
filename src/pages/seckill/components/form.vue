@@ -14,9 +14,8 @@
             end-placeholder="结束日期"
           ></el-date-picker>
         </el-form-item>
-        {{value}}
         <el-form-item label="一级分类" label-width="120px">
-          <el-select v-model="user.first_cateid" placeholder="请选择" @change="changeFirst">
+          <el-select v-model="user.first_cateid" placeholder="请选择一级分类" @change="changeFirst">
             <el-option
               v-for="item in cateList"
               :label="item.catename"
@@ -26,7 +25,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="二级分类" label-width="120px">
-          <el-select v-model="user.second_cateid" placeholder="请选择" @change="changeGoodsId">
+          <el-select v-model="user.second_cateid" placeholder="请选择二级分类" @change="changeGoodsId">
             <el-option
               v-for="item in secondCateList"
               :label="item.catename"
@@ -36,7 +35,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="商品" label-width="120px">
-          <el-select v-model="user.goodsid" placeholder="请选择">
+          <el-select v-model="user.goodsid" placeholder="请选择商品">
             <el-option
               v-for="item in attrList"
               :label="item.goodsname"
@@ -69,9 +68,12 @@ import {
   reqGoodsDetail,
   reqGoodsEdit,
   reqSeckAdd,
+  reqGoodsList,
   reqspecsAdd,
   reqspecsDetail,
   reqspecsEdit,
+  reqSeckDetail,
+  reqSeckEdit,
 } from "../../../utils/http";
 export default {
   props: ["info"],
@@ -89,7 +91,7 @@ export default {
       secondCateList: [],
       goodsAttr: [],
       attrList: [],
-      value: "",
+      value: [],
     };
   },
   mounted() {
@@ -126,7 +128,7 @@ export default {
       };
       this.secondCateList = [];
       this.attrList = [];
-      this.value = "";
+      this.value = [];
     },
     changeFirst() {
       this.user.second_cateid = "";
@@ -138,55 +140,63 @@ export default {
       });
     },
     changeGoodsId() {
-      this.user.goodsAttr = [];
+      this.user.goodsid = "";
       this.getAttrs();
     },
     getAttrs() {
-      let obj = this.goodsList.find((item) => item.id === this.user.specsid);
-      console.log(obj);
-      // this.attrList = obj.attrs;
+      reqGoodsList({
+        fid: this.user.first_cateid,
+        sid: this.user.second_cateid,
+      }).then((res) => {
+        this.attrList = res.data.list;
+      });
     },
 
     add() {
       this.user.begintime = this.value[0].getTime();
       this.user.endtime = this.value[1].getTime();
       console.log(this.user);
-      // reqSeckAdd(this.user).then((res) => {
-      //   if (res.data.code == 200) {
-      //     successAlert(res.data.msg);
-      //     this.cancel();
-      //     this.empty();
-      //     this.reqseckList();
-      //   }
-      // });
+      reqSeckAdd(this.user).then((res) => {
+        if (res.data.code == 200) {
+          successAlert(res.data.msg);
+          this.cancel();
+          this.empty();
+          this.reqseckList();
+        }
+      });
     },
     getOne(id) {
-      reqGoodsDetail(id).then((res) => {
+      reqSeckDetail(id).then((res) => {
         this.user = res.data.list;
         this.user.id = id;
         //请求二级的list
         this.getSecondList();
-        //属性
-        this.user.specsattr = JSON.parse(this.user.specsattr);
         //计算规格属性的list
         this.getAttrs();
+        //日期
+        this.value.push(
+          new Date(JSON.parse(this.user.begintime)),
+          new Date(JSON.parse(this.user.endtime))
+        );
       });
     },
     update() {
-      // reqGoodsEdit(d).then((res) => {
-      //   if (res.data.code == 200) {
-      //     successAlert(res.data.msg);
-      //     this.cancel();
-      //     this.empty();
-      //     this.reqgoodsList();
-      //   }
-      // });
+      this.user.begintime = this.value[0].getTime();
+      this.user.endtime = this.value[1].getTime();
+      reqSeckEdit(this.user).then((res) => {
+        if (res.data.code == 200) {
+          successAlert(res.data.msg);
+          this.cancel();
+          this.empty();
+          this.reqseckList();
+        }
+      });
     },
     cancel() {
       this.info.isshow = false;
     },
     closed() {
-      if (this.info.title == "编辑商品") {
+      if (this.info.title == "编辑秒杀") {
         this.empty();
       }
     },

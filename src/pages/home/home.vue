@@ -41,7 +41,7 @@ export default {
             series: [
               {
                 name: "子分类数量",
-                type: "bar",
+                type: "line",
                 data: this.list.map((item) =>
                   item.children ? item.children.length : 0
                 ),
