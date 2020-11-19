@@ -6,7 +6,6 @@
           <el-input v-model="user.title" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="活动时间" label-width="120px">
-          {{value}}
           <el-date-picker
             v-model="value"
             type="daterange"
@@ -64,10 +63,7 @@ import { mapActions, mapGetters } from "vuex";
 import { errorAlert, successAlert } from "../../../utils/alert";
 import {
   reqCateList,
-  reqGoodsAdd,
-  reqGoodsDel,
   reqGoodsDetail,
-  reqGoodsEdit,
   reqSeckAdd,
   reqGoodsList,
   reqspecsAdd,

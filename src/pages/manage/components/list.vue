@@ -31,21 +31,29 @@ import { mapActions, mapGetters } from "vuex";
 import { successAlert } from "../../../utils/alert";
 import { reqRoleDel, reqUserDel, reqUserList } from "../../../utils/http";
 export default {
-  props: ["userList"],
   data() {
     return {};
   },
-  mounted() {},
+  mounted() {
+    this.reqList();
+    this.reqCount();
+  },
   computed: {
-    ...mapGetters({}),
+    ...mapGetters({
+      userList: "manage/list",
+    }),
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      reqList: "manage/reqList",
+      reqCount: "manage/reqCount",
+    }),
     del(uid) {
       reqUserDel(uid).then((res) => {
         if (res.data.code == 200) {
           successAlert("删除成功");
-          this.$emit("init");
+          this.reqList();
+          this.reqCount()
         }
       });
     },

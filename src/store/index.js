@@ -12,6 +12,9 @@ import banner from "./modules/banner";
 import goods from "./modules/goods";
 import seckill from "./modules/seckill";
 import menu from "./modules/menu";
+import role from "./modules/role";
+import manage from "./modules/manage";
+import vip from "./modules/vip";
 
 export default new Vuex.Store({
   state,
@@ -24,6 +27,9 @@ export default new Vuex.Store({
     banner,
     goods,
     seckill,
-    menu
+    menu,
+    role,
+    manage,
+    vip
   }
 });

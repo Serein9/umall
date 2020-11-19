@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-dialog :title="info.title" :visible.sync="info.isshow" @closed="closed" @opened="opened">
-      <el-form :model="user" :rules="rules">
-        <el-form-item label="一级分类" label-width="120px">
+      <el-form :model="user" :rules="rules" >
+        <el-form-item label="一级分类" label-width="120px" prop="first_cateid">
           <el-select v-model="user.first_cateid" placeholder="请选择" @change="changeFirst">
             <el-option
               v-for="item in cateList"
@@ -12,7 +12,7 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="二级分类" label-width="120px">
+        <el-form-item label="二级分类" label-width="120px" prop="second_cateid">
           <el-select v-model="user.second_cateid" placeholder="请选择">
             <el-option
               v-for="item in secondCateList"
@@ -22,13 +22,13 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="商品名称" label-width="120px">
+        <el-form-item label="商品名称" label-width="120px" prop="goodsname">
           <el-input v-model="user.goodsname" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="价格" label-width="120px">
+        <el-form-item label="价格" label-width="120px" prop="price">
           <el-input v-model="user.price" autocomplete="off"></el-input>
         </el-form-item>
-        <el-form-item label="市场价格" label-width="120px">
+        <el-form-item label="市场价格" label-width="120px" prop="market_price">
           <el-input v-model="user.market_price" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="图片" label-width="120px">
@@ -38,7 +38,7 @@
             <input type="file" v-if="info.isshow" class="ipt" @change="changeFile" />
           </div>
         </el-form-item>
-        <el-form-item label="商品规格" label-width="120px">
+        <el-form-item label="商品规格" label-width="120px" prop="specsid">
           <el-select v-model="user.specsid" placeholder="请选择" @change="changeSpecsId">
             <el-option
               v-for="item in specsList"
@@ -48,12 +48,12 @@
             ></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="规格属性" label-width="120px">
+        <el-form-item label="规格属性" label-width="120px" prop="specsattr">
           <el-select v-model="user.specsattr" placeholder="请选择二级分类" multiple>
             <el-option v-for="item in attrList" :label="item" :key="item" :value="item"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="是否新品" label-width="120px">
+        <el-form-item label="是否新品" label-width="120px" >
           <el-radio v-model="user.isnew" :label="1">是</el-radio>
           <el-radio v-model="user.isnew" :label="2">否</el-radio>
         </el-form-item>

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-dialog :title="info.title" :visible.sync="info.isshow">
+    <el-dialog :title="info.title" :visible.sync="info.isshow" @closed="closed">
       <el-form :model="user">
         <el-form-item label="属性角色" label-width="120px">
           <el-select v-model="user.roleid" placeholder="请选择">
@@ -25,7 +25,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
-        <el-button type="primary" @click="add" v-if="info.title==='添加角色'">添 加</el-button>
+        <el-button type="primary" @click="add" v-if="info.title==='添加管理员'">添 加</el-button>
         <el-button type="primary" @click="update" v-else>修 改</el-button>
       </div>
     </el-dialog>
@@ -65,7 +65,10 @@ export default {
     ...mapGetters({}),
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      reqList: "manage/reqList",
+      reqCount: "manage/reqCount",
+    }),
     cancel() {
       this.info.isshow = false;
     },
@@ -83,7 +86,8 @@ export default {
           successAlert("添加成功");
           this.cancel();
           this.empty();
-          this.$emit("init");
+          this.reqList();
+          this.reqCount();
         }
       });
     },
@@ -101,9 +105,14 @@ export default {
           successAlert(res.data.msg);
           this.cancel();
           this.empty();
-          this.$emit("init");
+          this.reqList();
         }
       });
+    },
+    closed() {
+      if (this.info.title == "编辑管理员") {
+        this.empty();
+      }
     },
   },
 };

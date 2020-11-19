@@ -45,7 +45,7 @@ export default {
     ...mapGetters({}),
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({ reqList: "vip/reqList" }),
     getOne(uid) {
       reqVipDetail(uid).then((res) => {
         this.user = res.data.list;
@@ -76,7 +76,7 @@ export default {
           successAlert(res.data.msg);
           this.cancel();
           this.empty();
-          this.$emit("init");
+          this.reqList();
         }
       });
     },

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <v-list :vipList="vipList" @edit="edit"></v-list>
-    <v-form :info="info" ref="form" @init="init"></v-form>
+    <v-list @edit="edit"></v-list>
+    <v-form :info="info" ref="form"></v-form>
   </div>
 </template>
 
@@ -18,7 +18,6 @@ export default {
   },
   data() {
     return {
-      vipList: [],
       info: {
         isshow: false,
         title: "编辑角色",
@@ -26,20 +25,16 @@ export default {
     };
   },
   mounted() {
-    this.init();
+    this.reqList();
   },
   computed: {
     ...mapGetters({}),
   },
   methods: {
-    ...mapActions({}),
-    init() {
-      reqVipList().then((res) => {
-        if (res.data.code == 200) {
-          this.vipList = res.data.list;
-        }
-      });
-    },
+    ...mapActions({
+      reqList: "vip/reqList",
+    }),
+
     edit(uid) {
       this.info.isshow = true;
       this.$refs.form.getOne(uid);

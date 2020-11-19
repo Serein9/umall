@@ -67,7 +67,9 @@ export default {
     ...mapGetters({}),
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      reqList: "role/reqList",
+    }),
     cancel() {
       this.info.isshow = false;
     },
@@ -87,7 +89,7 @@ export default {
           successAlert("添加成功");
           this.cancel();
           this.empty();
-          this.$emit("init");
+          this.reqList();
         }
       });
     },
@@ -107,7 +109,7 @@ export default {
           successAlert("修改成功");
           this.cancel();
           this.empty();
-          this.$emit("init");
+          this.reqList();
         }
       });
     },

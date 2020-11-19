@@ -30,21 +30,24 @@ import { mapActions, mapGetters } from "vuex";
 import { successAlert } from "../../../utils/alert";
 import { reqRoleDel } from "../../../utils/http";
 export default {
-  props: ["list"],
   data() {
     return {};
   },
   mounted() {},
   computed: {
-    ...mapGetters({}),
+    ...mapGetters({
+      list: "role/list",
+    }),
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      reqList: "role/reqList",
+    }),
     del(id) {
       reqRoleDel(id).then((res) => {
         if (res.data.code == 200) {
           successAlert("删除成功");
-          this.$emit("init");
+          this.reqList();
         }
       });
     },

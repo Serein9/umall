@@ -29,18 +29,19 @@
 import { mapActions, mapGetters } from "vuex";
 import { reqVipDetail } from "../../../utils/http";
 export default {
-  props: ["vipList"],
   data() {
     return {};
   },
   mounted() {},
   computed: {
-    ...mapGetters({}),
+    ...mapGetters({
+      vipList: "vip/list",
+    }),
   },
   methods: {
     ...mapActions({}),
     edit(uid) {
-      this.$emit("edit",uid)
+      this.$emit("edit", uid);
     },
   },
 };

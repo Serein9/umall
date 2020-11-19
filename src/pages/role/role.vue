@@ -2,9 +2,9 @@
   <div>
     <el-button type="primary" @click="willAdd">添加</el-button>
     <!-- 列表 -->
-    <v-list @init="init" :list="list" @edit="edit"></v-list>
+    <v-list @edit="edit"></v-list>
     <!-- 弹框 -->
-    <v-form :info="info" @init="init" ref="form"></v-form>
+    <v-form :info="info" ref="form"></v-form>
   </div>
 </template>
 
@@ -28,23 +28,20 @@ export default {
     };
   },
   mounted() {
-    this.init();
+    this.reqList();
   },
   computed: {
     ...mapGetters({}),
   },
   methods: {
-    ...mapActions({}),
+    ...mapActions({
+      reqList: "role/reqList",
+    }),
     willAdd() {
       this.info.isshow = true;
+      this.info.title = "添加角色";
     },
-    init() {
-      reqRoleList().then((res) => {
-        if (res.data.code == 200) {
-          this.list = res.data.list;
-        }
-      });
-    },
+
     edit(id) {
       this.info.title = "编辑角色";
       this.info.isshow = true;
